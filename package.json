@@ -1,0 +1,20 @@
+{
+  "name": "untitled",
+  "version": "1.0.0",
+  "main": "yargs.js",
+  "scripts": {
+    "start": "nodemon yargs.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "simple-date": "yargs.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "moment": "^2.29.1",
+    "yargs": "^16.2.0"
+  }
+}
