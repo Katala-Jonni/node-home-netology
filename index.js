@@ -33,9 +33,6 @@ rl.on('line', async data => {
         console.log(getMessage(isEqual));
         await fs.writeFile(pathFile, JSON.stringify(results));
         return isEqual && rl.close();
-        // const file = await fs.readFile(pathFile, 'utf-8');
-        // console.log(JSON.parse(file));
-        // return console.log('Чтобы выйти из игры необходимо нажать CTRL + C');
     } else {
         return console.log('Число должно быть 1 или 2');
     }
