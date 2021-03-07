@@ -1,45 +1,53 @@
-const fs = require('fs/promises');
-const path = require('path');
+const http = require('http');
 const readline = require('readline');
 const yargs = require('yargs/yargs');
 
 const { hideBin } = require('yargs/helpers');
 const argv = yargs(hideBin(process.argv)).argv;
 
-const pathFile = path.join(__dirname, argv._[0]);
+const city = argv._[0];
+
+const API = `http://api.weatherstack.com/current?access_key=${process.env.TOKEN}`;
 
 const rl = readline.createInterface({
     input: process.stdin
 });
 
-const results = [];
+const getMessage = ({ request, current }) => {
+    return `
+    ${request.query},
+    Температура: ${current.temperature}
+    Ветер: ${current.wind_speed} км / ч
+    Осадки: ${current.precip} мм
+    Давление: ${current.precip} мб
+    `;
+};
 
-const getNumber = () => Math.floor(Math.random() * 100) > 50 ? 2 : 1;
-const getMessage = bool => bool ? 'Вы угадали число' : 'Вы не угадали число';
+const handleGetRequest = res => {
+    res.setEncoding('utf8');
+    let rawData = '';
+    res.on('data', chunk => rawData += chunk);
+    res.on('end', () => {
+        let parsedData = JSON.parse(rawData);
+        if (parsedData.error) {
+            console.log('Ваш запрос не удался. Пожалуйста, попробуйте еще раз или обратитесь в службу поддержки.');
+        } else {
+            console.log(getMessage(parsedData));
+        }
+    })
+        .on('error', (e) => {
+            console.error(`Got error: ${e.message}`);
+        });
+    return rl.close();
+};
 
-rl.on('line', async data => {
-    if (!data) {
-        console.log('Чтобы выйти из игры необходимо нажать CTRL + C');
-        return console.log('Угадайте число 1 или 2?');
+rl.on('line', async () => {
+    if (!city) {
+        console.log('Введите название города, для которого требуется вывести прогноз');
+        return rl.close();
     }
-    const dataNumber = +data;
-    if (!Number.isFinite(dataNumber)) {
-        return console.log('Введите число 1 или 2');
-    }
-    if (dataNumber > 0 && dataNumber <= 2) {
-        const secretNumber = getNumber();
-        const isEqual = secretNumber === dataNumber;
-        results.push(isEqual);
-        console.log(getMessage(isEqual));
-        await fs.writeFile(pathFile, JSON.stringify(results));
-        return isEqual && rl.close();
-    } else {
-        return console.log('Число должно быть 1 или 2');
-    }
-});
-
-rl.on('close', () => {
-    return console.log('Игра закончена!');
+    const path = `${API}&query=${city}`;
+    http.get(path, handleGetRequest);
 });
 
 rl.emit('line');

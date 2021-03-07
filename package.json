@@ -4,7 +4,8 @@
   "main": "yargs.js",
   "scripts": {
     "start": "nodemon yargs.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node -r dotenv/config index.js"
   },
   "bin": {
     "simple-date": "yargs.js"
@@ -16,5 +17,8 @@
   "dependencies": {
     "moment": "^2.29.1",
     "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }
