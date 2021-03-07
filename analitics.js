@@ -14,7 +14,7 @@ const rl = readline.createInterface({
 
 const analitics = {};
 
-rl.on('line', async data => {
+rl.on('line', async () => {
     try {
         const file = await fs.readFile(pathFile, 'utf-8');
         const results = JSON.parse(file);
@@ -22,12 +22,15 @@ rl.on('line', async data => {
         const wins = results.filter(el => el);
         analitics.wins = wins.length;
         analitics.losts = analitics.count - analitics.wins;
-        const ratio = wins.length / analitics.losts;
-        analitics.ratio = ratio === 1 ? '0.5' : ratio.toFixed(2);
-        rl.close();
+        const ratio = analitics.losts !== 0
+            ? wins.length / analitics.losts
+            : 100;
+        analitics.ratio = ratio === 1
+            ? '0.5'
+            : ratio.toFixed(2);
+        rl.emit('close', 0);
     } catch (e) {
-        console.log(e);
-        rl.close();
+        rl.emit('close', 1);
     }
 
 });
@@ -39,8 +42,13 @@ const getResultMessage = () => {
     `;
 };
 
-rl.on('close', () => {
+rl.on('close', (code) => {
+    if (code > 0) {
+        console.log('Файл поврежден или не найден');
+        return process.exit(0);
+    }
     console.log('Анатализатор файла закончил работу');
     console.log(`Результат: ${getResultMessage()}`);
+    return process.exit(0);
 });
 rl.emit('line');
