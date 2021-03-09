@@ -1,22 +1,21 @@
 {
-  "name": "untitled",
+  "name": "katala-jonni",
   "version": "1.0.0",
-  "main": "yargs.js",
+  "main": "ndse-homeworks",
   "scripts": {
     "start": "nodemon yargs.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node -r dotenv/config index.js"
-  },
-  "bin": {
-    "simple-date": "yargs.js"
+    "dev": "nodemon -r dotenv/config index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "moment": "^2.29.1",
-    "yargs": "^16.2.0"
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-form-data": "^2.0.14",
+    "node-unique-id-generator": "^0.1.0",
+    "nodemon": "^2.0.7"
   },
   "devDependencies": {
     "dotenv": "^8.2.0"
