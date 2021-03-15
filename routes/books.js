@@ -70,7 +70,7 @@ router.get('/:id/download-img', (req, res) => {
         .get('books')
         .find({ id })
         .value();
-    if (!book) {
+    if (!book || !book.fileBook) {
         return res
             .status(404)
             .redirect('/404');
@@ -125,11 +125,11 @@ router.post('/update/:id', fileMiddleware.single('fileBook'), async (req, res) =
         // Удаление прошлой картинки
         if (book.fileBook) {
             await deleteFile(book.fileBook);
-            // Удаление прошлой картинки, если изменили и удалили вообще картинку
-            // но прошлая картинка есть на сервере
-        } else if (!req.body.fileBook && book.fileBook) {
-            await deleteFile(book.fileBook);
         }
+        // Удаление прошлой картинки, если изменили и удалили вообще картинку
+        // но прошлая картинка есть на сервере
+    } else if (!req.body.fileBook && book.fileBook) {
+        await deleteFile(book.fileBook);
     }
     const {
         title,

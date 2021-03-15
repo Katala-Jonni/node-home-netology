@@ -1,3 +1,5 @@
+HEROKU: https://katala-jonni-ejs.herokuapp.com/
+
 # Домашнее задание к занятию «2.3 EJS»
 
 **Правила выполнения домашней работы:** 
