@@ -10,7 +10,6 @@ const router = Router();
 const store = {
     books: []
 };
-
 // mock
 const ids = [
     {
