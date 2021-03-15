@@ -19,6 +19,15 @@
       "fileCover": "fileCover 2",
       "fileName": "fileName 2",
       "fileBook": "public/img/93bc0d2a-1c50-586c-cdd5-edcd2e28ea8e.png"
+    },
+    {
+      "id": "c477c4f3-b7c4-29b2-da69-c5900ca5385d",
+      "title": "какая то услуга",
+      "description": "yy",
+      "authors": "yuyuy",
+      "favorite": "",
+      "fileCover": "",
+      "fileName": ""
     }
   ],
   "users": [
