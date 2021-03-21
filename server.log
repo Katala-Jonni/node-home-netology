@@ -26,3 +26,7 @@
 18:33:40 GET: /books/update/93bc0d2a-1c50-586c-cdd5-edcd2e28ea8e user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36
 18:33:41 GET: /books/create user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36
 18:33:48 GET: / user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36
+22:9:1 GET: /api/books/9fdc9dd0-2935-fd5a-f238-8c46d57dfbe1 user-agent: PostmanRuntime/7.26.10
+22:9:6 GET: /api/books/ user-agent: PostmanRuntime/7.26.10
+12:30:16 GET: /api/books/ user-agent: curl/7.64.1
+12:30:35 GET: /api/books/b602c125-665c-5350-1302-0c970b5402e3 user-agent: curl/7.64.1
