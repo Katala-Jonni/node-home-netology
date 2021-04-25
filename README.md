@@ -4,15 +4,15 @@
 2. 127.0.0.1 katala-jonni.local
 
 ## Версии
-Для prod версии в корне приложения в терминале:
+**Для prod версии в корне приложения в терминале:**
 
-**docker-compose up --build**
+docker-compose up --build
 
 Открыть браузер в адресную строку ввести katala-jonni.com + enter
 
-Для dev версии в корне приложения в терминале:
+**Для dev версии в корне приложения в терминале:**
 
-**docker-compose -f docker-compose.yml -f docker-compose.development.yml up --build**
+docker-compose -f docker-compose.yml -f docker-compose.development.yml up --build
 
 Открыть браузер в адресную строку ввести katala-jonni.local/ + enter
 
