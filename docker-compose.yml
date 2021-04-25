@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+  library:
+    build: ./library
+    command: npm run start
+    environment:
+      - PORT=3000
+      - COUNTER_API_URL=http://counter:3001
+    container_name: netology-library
+    restart: unless-stopped
+    networks:
+      - netology-library-network
+    volumes:
+      - ./library:/usr/src
+  counter:
+    build: ./counter
+    command: npm run start
+    environment:
+      - PORT=3001
+      - LIBRARY_API_URL=http://library:3000
+    depends_on:
+      - library
+    container_name: netology-library-counter
+    restart: unless-stopped
+    networks:
+      - netology-library-network
+    volumes:
+      - ./counter:/usr/src
+  nginx:
+    image: nginx:stable-alpine
+    container_name: netology-library-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
+    depends_on:
+      - library
+      - counter
+    networks:
+      - netology-library-network
+networks:
+  netology-library-network:
+    driver: bridge
