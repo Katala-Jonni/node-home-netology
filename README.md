@@ -8,9 +8,13 @@
 
 **docker-compose up --build**
 
+Открыть браузер в адресную строку ввести katala-jonni.com + enter
+
 Для dev версии в корне приложения в терминале:
 
 **docker-compose -f docker-compose.yml -f docker-compose.development.yml up --build**
+
+Открыть браузер в адресную строку ввести katala-jonni.local/ + enter
 
 В проекте подключен nginx
 
