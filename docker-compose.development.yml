@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  library:
+    command: npm run dev
+    volumes:
+    - ./library:/usr/src
+  counter:
+    command: npm run dev
+    volumes:
+      - ./counter:/usr/src
+  nginx:
+    volumes:
+      - ./nginx/nginx.conf.dev:/etc/nginx/conf.d/nginx.conf

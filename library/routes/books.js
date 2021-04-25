@@ -1,6 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const os = require('os');
+const axios = require('axios');
 const { Router } = require('express');
 const fileMiddleware = require('../middleware/file');
 const db = require('../store/index');
@@ -58,9 +59,17 @@ router.get('/:id', async (req, res) => {
             .status(404)
             .redirect('/404');
     }
+    await axios({
+        method: 'post',
+        url: `${process.env.COUNTER_API_URL}/counter/${id}/incr`
+    });
+    const request = await axios(`${process.env.COUNTER_API_URL}/counter/${id}`);
+    const counter = request.data.counter;
+    console.log(counter);
     res.render('books/view', {
         title: book.title || 'Библиотеки',
-        book
+        book,
+        counter
     });
 });
 
