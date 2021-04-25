@@ -14,7 +14,8 @@ const books = [
         authors: 'authors 1',
         favorite: 'favorite 1',
         fileCover: 'fileCover 1',
-        fileName: 'fileName 1'
+        fileName: 'fileName 1',
+        targetCounter: 0
     },
     {
         id: '93bc0d2a-1c50-586c-cdd5-edcd2e28ea8e',
@@ -24,7 +25,8 @@ const books = [
         favorite: 'favorite 2',
         fileCover: 'fileCover 2',
         fileName: 'fileName 2',
-        fileBook: path.join('public', 'img', '93bc0d2a-1c50-586c-cdd5-edcd2e28ea8e.png')
+        fileBook: path.join('public', 'img', '93bc0d2a-1c50-586c-cdd5-edcd2e28ea8e.png'),
+        targetCounter: 0
     }
 ];
 
