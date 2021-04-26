@@ -1,7 +1,0 @@
-{
-  "verbose": false,
-  "exec": "node index.js",
-  "ignore": [
-    "*.json"
-  ]
-}
