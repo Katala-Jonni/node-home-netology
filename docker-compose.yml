@@ -6,12 +6,17 @@ services:
     environment:
       - PORT=3000
       - COUNTER_API_URL=http://counter:3001
+      - DB_USERNAME=${DB_USERNAME:-root}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_NAME=${DB_NAME:-todos_database}
     container_name: netology-library
     restart: unless-stopped
     networks:
       - netology-library-network
     volumes:
       - ./library:/usr/src
+    env_file:
+      - ./library/.env
   counter:
     build: ./counter
     command: npm run start

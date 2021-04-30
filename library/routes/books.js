@@ -8,18 +8,27 @@ const db = require('../store/index');
 const { Book } = require('../models');
 const { createLog } = require('../utils');
 const router = Router();
+const Books = require('../models/Books');
 
 const createNewBook = item => {
-    return new Book(
-        {
-            title: item.title,
-            description: item.description,
-            authors: item.authors,
-            favorite: item.favorite,
-            fileCover: item.fileCover,
-            fileName: item.fileName
-        }
-    );
+    // return new Book(
+    //     {
+    //         title: item.title,
+    //         description: item.description,
+    //         authors: item.authors,
+    //         favorite: item.favorite,
+    //         fileCover: item.fileCover,
+    //         fileName: item.fileName
+    //     }
+    // );
+    return {
+        title: item.title,
+        description: item.description,
+        authors: item.authors,
+        favorite: item.favorite,
+        fileCover: item.fileCover,
+        fileName: item.fileName
+    };
 };
 
 const deleteFile = async filePath => await fs.unlink(filePath);
@@ -31,12 +40,13 @@ router.get('/create', (req, res) => {
     });
 });
 
-router.get('/update/:id', (req, res) => {
+router.get('/update/:id', async (req, res) => {
     const { id } = req.params;
-    const book = db
-        .get('books')
-        .find({ id })
-        .value();
+    // const book = db
+    //     .get('books')
+    //     .find({ id })
+    //     .value();
+    const book = await Books.findById(id).select('-__v');
     if (!book) {
         return res
             .status(404)
@@ -50,10 +60,12 @@ router.get('/update/:id', (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
-    const book = db
-        .get('books')
-        .find({ id })
-        .value();
+    // const book = db
+    //     .get('books')
+    //     .find({ id })
+    //     .value();
+    const book = await Books.findById(id).select('-__v');
+    ;
     if (!book) {
         return res
             .status(404)
@@ -73,12 +85,13 @@ router.get('/:id', async (req, res) => {
     });
 });
 
-router.get('/:id/download-img', (req, res) => {
+router.get('/:id/download-img', async (req, res) => {
     const { id } = req.params;
-    const book = db
-        .get('books')
-        .find({ id })
-        .value();
+    // const book = db
+    //     .get('books')
+    //     .find({ id })
+    //     .value();
+    const book = await Books.findById(id).select('-__v');
     if (!book || !book.fileBook) {
         return res
             .status(404)
@@ -103,26 +116,29 @@ router.get('/:id/download-img', (req, res) => {
         });
 });
 
-router.post('/create', fileMiddleware.single('fileBook'), (req, res) => {
+router.post('/create', fileMiddleware.single('fileBook'), async (req, res) => {
     const newBook = createNewBook(req.body);
     if (req.file) {
         const { path: pathFile } = req.file;
         newBook.fileBook = pathFile;
     }
-    db
-        .get('books')
-        .push(newBook)
-        .write();
+    const book = new Books(newBook);
+    await book.save();
+    // db
+    //     .get('books')
+    //     .push(newBook)
+    //     .write();
     res.status(201);
     res.redirect('/');
 });
 
 router.post('/update/:id', fileMiddleware.single('fileBook'), async (req, res) => {
     const { id } = req.params;
-    const book = db
-        .get('books')
-        .find({ id })
-        .value();
+    // const book = db
+    //     .get('books')
+    //     .find({ id })
+    //     .value();
+    const book = await Books.findById(id).select('-__v');
     if (!book) {
         return res
             .status(404)
@@ -146,25 +162,33 @@ router.post('/update/:id', fileMiddleware.single('fileBook'), async (req, res) =
         authors,
         fileBook
     } = req.body;
-    db
-        .get('books')
-        .find({ id })
-        .assign({
-            title,
-            description,
-            authors,
-            fileBook
-        })
-        .write();
+    // db
+    //     .get('books')
+    //     .find({ id })
+    //     .assign({
+    //         title,
+    //         description,
+    //         authors,
+    //         fileBook
+    //     })
+    //     .write();
+    const updateBook = {
+        title,
+        description,
+        authors,
+        fileBook
+    };
+    await Books.findByIdAndUpdate(id, updateBook);
     res.redirect('/');
 });
 
 router.post('/delete/:id', async (req, res) => {
     const { id } = req.params;
-    const book = db
-        .get('books')
-        .find({ id })
-        .value();
+    // const book = db
+    //     .get('books')
+    //     .find({ id })
+    //     .value();
+    const book = await Books.findById(id).select('-__v');
     if (!book) {
         return res
             .status(404)
@@ -178,11 +202,11 @@ router.post('/delete/:id', async (req, res) => {
             console.log(e);
         }
     }
-
-    db
-        .get('books')
-        .remove({ id })
-        .write();
+    // db
+    //     .get('books')
+    //     .remove({ id })
+    //     .write();
+    await Books.deleteOne({ _id: id });
     res.redirect('/');
 });
 
