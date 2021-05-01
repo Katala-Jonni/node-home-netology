@@ -1,15 +1,14 @@
-const uidGenerator = require('node-unique-id-generator');
+const { model, Schema } = require('mongoose');
 
-class Counter {
-    constructor(
-        {
-            id = uidGenerator.generateGUID(),
-            counter = 0
-        }
-    ) {
-        this.id = id;
-        this.counter = counter;
+const counterSchema = new Schema({
+    counter: {
+        type: Number
+    },
+    counterId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        unique: true
     }
-}
+});
 
-module.exports = Counter;
+module.exports = model('Counter', counterSchema);

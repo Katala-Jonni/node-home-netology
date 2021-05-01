@@ -4,23 +4,11 @@ const os = require('os');
 const axios = require('axios');
 const { Router } = require('express');
 const fileMiddleware = require('../middleware/file');
-const db = require('../store/index');
-const { Book } = require('../models');
 const { createLog } = require('../utils');
 const router = Router();
-const Books = require('../models/Books');
+const Book = require('../models/Book');
 
 const createNewBook = item => {
-    // return new Book(
-    //     {
-    //         title: item.title,
-    //         description: item.description,
-    //         authors: item.authors,
-    //         favorite: item.favorite,
-    //         fileCover: item.fileCover,
-    //         fileName: item.fileName
-    //     }
-    // );
     return {
         title: item.title,
         description: item.description,
@@ -41,173 +29,158 @@ router.get('/create', (req, res) => {
 });
 
 router.get('/update/:id', async (req, res) => {
-    const { id } = req.params;
-    // const book = db
-    //     .get('books')
-    //     .find({ id })
-    //     .value();
-    const book = await Books.findById(id).select('-__v');
-    if (!book) {
-        return res
-            .status(404)
-            .redirect('/404');
+    try {
+        const { id } = req.params;
+        const book = await Book.findById(id);
+        if (!book) {
+            return res
+                .status(404)
+                .redirect('/404');
+        }
+        res.render('books/update', {
+            title: book.title || 'Библиотека',
+            book
+        });
+    } catch (e) {
+        console.log(e.message);
     }
-    res.render('books/update', {
-        title: book.title || 'Библиотека',
-        book
-    });
+
 });
 
 router.get('/:id', async (req, res) => {
-    const { id } = req.params;
-    // const book = db
-    //     .get('books')
-    //     .find({ id })
-    //     .value();
-    const book = await Books.findById(id).select('-__v');
-    ;
-    if (!book) {
-        return res
-            .status(404)
-            .redirect('/404');
+    try {
+        const { id } = req.params;
+        const book = await Book.findById(id);
+        if (!book) {
+            return res
+                .status(404)
+                .redirect('/404');
+        }
+        await axios({
+            method: 'post',
+            url: `${process.env.COUNTER_API_URL}/counter/${id}/incr`
+        });
+        const request = await axios(`${process.env.COUNTER_API_URL}/counter/${id}`);
+        const counterBook = request.data.counter;
+        res.render('books/view', {
+            title: book.title || 'Библиотеки',
+            book,
+            counter: counterBook.counter
+        });
+    } catch (e) {
+        console.log(e.message);
     }
-    await axios({
-        method: 'post',
-        url: `${process.env.COUNTER_API_URL}/counter/${id}/incr`
-    });
-    const request = await axios(`${process.env.COUNTER_API_URL}/counter/${id}`);
-    const counter = request.data.counter;
-    console.log(counter);
-    res.render('books/view', {
-        title: book.title || 'Библиотеки',
-        book,
-        counter
-    });
 });
 
 router.get('/:id/download-img', async (req, res) => {
-    const { id } = req.params;
-    // const book = db
-    //     .get('books')
-    //     .find({ id })
-    //     .value();
-    const book = await Books.findById(id).select('-__v');
-    if (!book || !book.fileBook) {
-        return res
-            .status(404)
-            .redirect('/404');
-    }
-    res.download(
-        path.join(process.cwd(), book.fileBook),
-        book.title || book.fileBook,
-        async err => {
-            if (err) {
-                try {
-                    const data = `${createLog(req)}${os.EOL}${err}`;
-                    await fs.appendFile(path.join(process.cwd(), 'server.log'), data + os.EOL);
-                } catch (e) {
-                    console.log(e);
-                }
+    try {
+        const { id } = req.params;
+        const book = await Book.findById(id);
+        if (!book || !book.fileBook) {
+            return res
+                .status(404)
+                .redirect('/404');
+        }
+        res.download(
+            path.join(process.cwd(), book.fileBook),
+            book.title || book.fileBook,
+            async err => {
+                if (err) {
+                    try {
+                        const data = `${createLog(req)}${os.EOL}${err}`;
+                        await fs.appendFile(path.join(process.cwd(), 'server.log'), data + os.EOL);
+                    } catch (e) {
+                        console.log(e);
+                    }
 
-                return res
-                    .status(404)
-                    .json('book | not found');
-            }
-        });
+                    return res
+                        .status(404)
+                        .json('book | not found');
+                }
+            });
+    } catch (e) {
+        console.log(e.message);
+    }
 });
 
 router.post('/create', fileMiddleware.single('fileBook'), async (req, res) => {
-    const newBook = createNewBook(req.body);
-    if (req.file) {
-        const { path: pathFile } = req.file;
-        newBook.fileBook = pathFile;
+    try {
+        const newBook = createNewBook(req.body);
+        if (req.file) {
+            const { path: pathFile } = req.file;
+            newBook.fileBook = pathFile;
+        }
+        const book = new Book(newBook);
+        await book.save();
+        res.status(201);
+        res.redirect('/');
+    } catch (e) {
+        console.log(e.message);
     }
-    const book = new Books(newBook);
-    await book.save();
-    // db
-    //     .get('books')
-    //     .push(newBook)
-    //     .write();
-    res.status(201);
-    res.redirect('/');
 });
 
 router.post('/update/:id', fileMiddleware.single('fileBook'), async (req, res) => {
-    const { id } = req.params;
-    // const book = db
-    //     .get('books')
-    //     .find({ id })
-    //     .value();
-    const book = await Books.findById(id).select('-__v');
-    if (!book) {
-        return res
-            .status(404)
-            .redirect('/404');
-    }
-    if (req.file) {
-        const { path: pathFile } = req.file;
-        req.body.fileBook = pathFile;
-        // Удаление прошлой картинки
-        if (book.fileBook) {
+    try {
+        const { id } = req.params;
+        const book = await Book.findById(id);
+        if (!book) {
+            return res
+                .status(404)
+                .redirect('/404');
+        }
+        if (req.file) {
+            const { path: pathFile } = req.file;
+            req.body.fileBook = pathFile;
+            // Удаление прошлой картинки
+            if (book.fileBook) {
+                await deleteFile(book.fileBook);
+            }
+            // Удаление прошлой картинки, если изменили и удалили вообще картинку
+            // но прошлая картинка есть на сервере
+        } else if (!req.body.fileBook && book.fileBook) {
             await deleteFile(book.fileBook);
         }
-        // Удаление прошлой картинки, если изменили и удалили вообще картинку
-        // но прошлая картинка есть на сервере
-    } else if (!req.body.fileBook && book.fileBook) {
-        await deleteFile(book.fileBook);
+        const {
+            title,
+            description,
+            authors,
+            fileBook
+        } = req.body;
+        const updateBook = {
+            title,
+            description,
+            authors,
+            fileBook
+        };
+        await Book.findByIdAndUpdate(id, updateBook);
+        res.redirect('/');
+    } catch (e) {
+        console.log(e.message);
     }
-    const {
-        title,
-        description,
-        authors,
-        fileBook
-    } = req.body;
-    // db
-    //     .get('books')
-    //     .find({ id })
-    //     .assign({
-    //         title,
-    //         description,
-    //         authors,
-    //         fileBook
-    //     })
-    //     .write();
-    const updateBook = {
-        title,
-        description,
-        authors,
-        fileBook
-    };
-    await Books.findByIdAndUpdate(id, updateBook);
-    res.redirect('/');
 });
 
 router.post('/delete/:id', async (req, res) => {
-    const { id } = req.params;
-    // const book = db
-    //     .get('books')
-    //     .find({ id })
-    //     .value();
-    const book = await Books.findById(id).select('-__v');
-    if (!book) {
-        return res
-            .status(404)
-            .redirect('/404');
-    }
-    // Удаление картинки
-    if (book.fileBook) {
-        try {
-            await deleteFile(book.fileBook);
-        } catch (e) {
-            console.log(e);
+    try {
+        const { id } = req.params;
+        const book = await Book.findById(id);
+        if (!book) {
+            return res
+                .status(404)
+                .redirect('/404');
         }
+        // Удаление картинки
+        if (book.fileBook) {
+            try {
+                await deleteFile(book.fileBook);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        await Book.deleteOne({ _id: id });
+        res.redirect('/');
+    } catch (e) {
+        console.log(e.message);
     }
-    // db
-    //     .get('books')
-    //     .remove({ id })
-    //     .write();
-    await Books.deleteOne({ _id: id });
-    res.redirect('/');
 });
 
 module.exports = router;

@@ -31,6 +31,8 @@ services:
       - netology-library-network
     volumes:
       - ./counter:/usr/src
+    env_file:
+      - ./counter/.env
   nginx:
     image: nginx:stable-alpine
     container_name: netology-library-nginx

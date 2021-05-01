@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const db = require('../store/index');
 const router = Router();
+const User = require('../models/User');
 
-router.get('/', (req, res) => {
-    const user = db.get('users').value();
+router.get('/', async (req, res) => {
+    const user = await User.find().select('-__v');
     res.render('user', {
         title: 'Личный кабинет',
         user: user[0]
