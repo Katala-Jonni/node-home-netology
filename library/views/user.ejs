@@ -1,6 +1,7 @@
 <%- include("partials/head", {title: title}) %>
 <%- include("partials/nav") %>
 <div class="container">
-    <h3>Пользователь: <%= user.email%></h3>
+    <h3>Пользователь: <%= user.username%></h3>
+    <a href="user/logout">Выйти</a>
 </div>
 <%- include("partials/footer") %>

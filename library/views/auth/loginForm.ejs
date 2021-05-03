@@ -1,0 +1,21 @@
+<div class="row main__form">
+    <form class="col s12" action="/user/login" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="username" name="username" type="text" class="validate" required>
+                <label for="username">Логин</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="password" name="password" type="password" class="validate" required>
+                <label for="password">Пароль</label>
+            </div>
+        </div>
+        <button class="btn waves-effect waves-light red" type="submit" name="action">Войти
+            <i class="material-icons right">send</i>
+        </button>
+        <a href="/user/auth/vkontakte" class="waves-effect waves-light btn blue">Вконтакте</a>
+        <p><a href="/user/signup">Регистрация</a></p>
+    </form>
+</div>

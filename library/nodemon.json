@@ -1,6 +1,6 @@
 {
   "verbose": false,
-  "exec": "node index.js",
+  "exec": "node -r dotenv/config index.js",
   "ignore": [
     "*.json"
   ]
