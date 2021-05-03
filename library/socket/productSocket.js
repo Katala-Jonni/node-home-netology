@@ -12,6 +12,7 @@ const productSocket = async socket => {
             const data = {
                 text: msg.text
             };
+
             const product = await Book.findByIdAndUpdate(roomName, { $push: { comments: data } }, { new: true });
             if (!product) return false;
             msg.comments = product.comments;
