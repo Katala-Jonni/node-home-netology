@@ -6,6 +6,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { VkontakteStrategy, LStrategy } = require('./auth');
 const User = require('./models/User');
+const socketConnection = require('./socket');
+
+const http = require('http');
+const socketIO = require('socket.io');
 
 const loggerMiddleware = require('./middleware/logger');
 const notFoundMiddleware = require('./middleware/404');
@@ -17,6 +21,10 @@ const userRouter = require('./routes/api/user');
 const booksRouter = require('./routes/api/books');
 
 const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
+
+io.on('connection', socketConnection);
 
 app.set('view engine', 'ejs');
 app.use('/public', express.static(path.join(__dirname, '/public')));
@@ -69,9 +77,11 @@ const PORT = process.env.PORT || 3000;
 const start = async () => {
     try {
         await mongoose.connect(process.env.DB_HOST, {
-            useNewUrlParser: true, useUnifiedTopology: true
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false
         });
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`Server running on port - ${PORT}`);
         });
     } catch (e) {

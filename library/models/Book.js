@@ -22,7 +22,15 @@ const BookSchema = new Schema({
     },
     fileBook: {
         type: String
-    }
+    },
+    comments: [
+        {
+            text: {
+                type: String,
+                trim: true
+            }
+        }
+    ]
 });
 
 module.exports = model('Book', BookSchema);

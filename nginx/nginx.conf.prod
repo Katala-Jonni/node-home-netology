@@ -8,4 +8,4 @@ server {
         proxy_pass http://counter:3001;
         rewrite ^/(.*) /$1 break;
     }
-}
+ }

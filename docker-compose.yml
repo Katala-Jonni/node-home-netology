@@ -6,30 +6,31 @@ services:
     environment:
       - PORT=3000
       - COUNTER_API_URL=http://counter:3001
+      - AUTH_API=http://auth:3002
     container_name: netology-library
     restart: unless-stopped
-    networks:
-      - netology-library-network
     volumes:
       - ./library:/usr/src
     env_file:
       - ./library/.env
+    networks:
+      - netology-library-network
   counter:
     build: ./counter
     command: npm run start
     environment:
       - PORT=3001
       - LIBRARY_API_URL=http://library:3000
-    depends_on:
-      - library
     container_name: netology-library-counter
     restart: unless-stopped
-    networks:
-      - netology-library-network
     volumes:
       - ./counter:/usr/src
     env_file:
       - ./counter/.env
+    depends_on:
+      - library
+    networks:
+      - netology-library-network
   nginx:
     image: nginx:stable-alpine
     container_name: netology-library-nginx
