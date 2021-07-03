@@ -1,0 +1,36 @@
+<%- include("partials/head", {title: title}) %>
+<%- include("partials/nav") %>
+<div class="container container__main">
+    <div class="book_container">
+        <div class="row">
+            <% if(books.length) { %>
+                <% books.map((el, idx) => { %>
+                    <div class="col s12 m4">
+                        <div class="card">
+                            <div class="card-image">
+                                <a href="books/<%= el._id %>">
+                                    <img src="<%= el.fileBook %>">
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <p><%= el.title || `Книга №${idx + 1}` %></p>
+                            </div>
+                            <div class="card-action card__action">
+                                <a href="books/<%= el._id %>" class="btn blue card__action-create"><i
+                                            class="material-icons">preview</i></a>
+                                <a href="books/update/<%= el._id %>" class="btn green card__action-create"><i
+                                            class="material-icons">create</i></a>
+                                <form method="post" action="books/delete/<%= el._id %>">
+                                    <button type="submit" class="btn red"><i class="material-icons">delete</i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <h6>Все книги с библиотеки вынесли = )))</h6>
+            <% } %>
+        </div>
+    </div>
+</div>
+<%- include("partials/footer") %>

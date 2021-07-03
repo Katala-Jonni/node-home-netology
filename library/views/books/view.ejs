@@ -1,0 +1,21 @@
+<%- include("../partials/head", {title: title}) %>
+<%- include("../partials/nav") %>
+<div class="container">
+    <div class="row">
+        <div class="col s12 book__view offset-s1">
+            <img width="650" src="../<%= book.fileBook %>" alt="<%= book.title %>">
+        </div>
+        <div class="col s12">
+            <div class="collection">
+                <a class="collection-item"><%= book.title %></a>
+                <a class="collection-item"><%= book.description %></a>
+                <a class="collection-item"><%= book.authors %></a>
+                <a class="collection-item"><%= book.fileName %></a>
+                <a class="collection-item">Количество просмотров: <%= counter %></a>
+            </div>
+            <a href="<%= book.id %>/download-img" class="btn waves-effect waves-light"><i class="material-icons">download</i></a>
+        </div>
+        <%- include("../feedback/comment") %>
+    </div>
+</div>
+<%- include("../partials/footer") %>
